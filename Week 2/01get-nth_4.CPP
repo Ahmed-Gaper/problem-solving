@@ -51,10 +51,10 @@ class linked_list
         /*vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/    
     int get_ntn_back(int val)
     {
-        int counter=0;
+        int counter=length;
         if(val>length)
         return -1;
-        for ( node *cur=head;cur;cur=cur->next,counter++)
+        for ( node *cur=head;cur;cur=cur->next,counter--)
         {
             if(counter==val)
             return cur->data;
@@ -63,7 +63,6 @@ class linked_list
         
 
     }
-
 
 
 
