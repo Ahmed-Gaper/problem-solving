@@ -1,8 +1,7 @@
 #include <iostream>
 #include <cassert>
 #include <climits>
-
-#include <vector>		// for debug
+#include <vector>		
 #include <algorithm>
 #include <sstream>
 using namespace std;
@@ -89,27 +88,7 @@ public:
 		return oss.str();
 	}
 
-	void debug_verify_data_integrity() {
-		if (length == 0) {
-			assert(head == nullptr);
-			assert(tail == nullptr);
-		} else {
-			assert(head != nullptr);
-			assert(tail != nullptr);
-			if (length == 1)
-				assert(head == tail);
-			else
-				assert(head != tail);
-			assert(!tail->next);
-		}
-		int len = 0;
-		for (Node* cur = head; cur; cur = cur->next, len++)
-			assert(len < 10000);	// Consider infinite cycle?
-		assert(length == len);
-		assert(length == (int)debug_data.size());
-	}
-
-	////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////
 
 	void print() {
 		for (Node* cur = head; cur; cur = cur->next)
@@ -139,65 +118,58 @@ public:
 			tail->next = item, tail = item;
 	}
 
-	void insert_front(int value) {
-		Node* item = new Node(value);
-		add_node(item);
-
-		item->next = head;
-		head = item;
-
-		if(length == 1)
-			tail = head;
-	}
-	void delete_front() {
-		assert(length);
-		Node* cur = head->next;
-		delete_node(head);
-		head = cur;
-	}
-
         /*///////////////////////////////////////////solution\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*/
         /*vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
-	void relikning(Node* node) {
-		
-		assert(node);
 
-		Node* prv = node->next;
-		bool is_tail = prv == tail;
+	 void relinking(Node * prev)
+	 {
 
-		node->next = node->next->next;
+		Node * cur2=prev->next;
+        if(!prev)
+        {
+            Node * p=head->next;
+            delete_node(head);
+            head=p;
+            return;
+        }
 
-		delete_node(prv);
-		if (is_tail)
-			tail = node;
-	}
-
-	void remove_last(int target) {		
-		if (!length)
-			return;
-
-		Node* prvco = nullptr;
-		bool check = false;
-
-		// Find the last one and remove it
-
-		for (Node *cur = head, *prv = nullptr; cur; prv = cur, cur = cur->next) {
-			if (cur->data == target)
-				check = true, prvco = prv;
+		if(cur2==tail)
+		{
+            prev->next=nullptr;
+			delete_node(tail);
+            tail=prev;
+            return;    
 		}
-		if (check) {
-			if (prvco)
-				relikning(prvco);
-			
-		}
-	}
+		prev->next=cur2->next;
+        delete_node(cur2);
+     }
+
+     void remove_last(int val)
+     {
+        Node *save=nullptr;
+        for(Node *cur=head,*prv=nullptr;cur;prv=cur,cur=cur->next)
+        {
+            if(cur->data==val)
+            {
+                save=prv;
+            }
+        }
+        if(save)
+            {
+                relinking(save);
+            }
+            else
+            return;
+     }
+
+           
 
 };
 
 
 
 void test1() {
-	cout << "\n\ntest3\n";
+	cout << "\n\ntest1\n";
 	LinkedList list;
 
 	list.insert_end(1);
@@ -205,7 +177,9 @@ void test1() {
 	list.insert_end(3);
 	list.insert_end(4);
 	list.insert_end(1);
-	list.remove_last(1);
+	
+	
+    list.remove_last(1);
 	list.print();
 
 	string expected = "1 2 3 4";
@@ -216,7 +190,6 @@ void test1() {
 	}
 	list.debug_print_list("********");
 }
-
 
 
 int main() {
